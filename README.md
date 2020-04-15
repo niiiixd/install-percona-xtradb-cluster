@@ -4,7 +4,7 @@ In this article, we are installing Percona XtraDB Cluster on CentOS 7.
 we are using just two nodes here, but the configurations do not vary, even if you are scaling to hundreds of nodes.
 
 ## Allow Percona XtraDB Cluster Service Ports in CentOS 7 Firewall:
-Connect with percona-01.example.com using ssh as root user.
+Connect with pxc1.nazarbazi.ir using ssh as root user.
 Percona XtraDB Cluster requires following service ports for communication, therefore, we are allowing these service ports in CentOS 7 firewall.
 ```
   firewall-cmd --permanent --add-port={3306,4444,4567,4568}/tcp<br>
@@ -51,10 +51,10 @@ Stop Percona database service.
 ```
   systemctl stop mysql.service
 ```
-### Repeat the above steps on percona-02.example.com.
+### Repeat the above steps on pxc2.nazarbazi.ir.
 
 ## Configure PXC nodes for Write-set Replication:
-Configure Percona XtraDB Cluster settings on percona-01.example.com.
+Configure Percona XtraDB Cluster settings on pxc1.nazarbazi.ir.
 ```
   vim /etc/percona-xtradb-cluster.conf.d/wsrep.cnf
 ```
@@ -64,12 +64,12 @@ Find and set following directives therein.
 
   wsrep_node_address=192.168.116.204
 
-  wsrep_node_name=percona-01
+  wsrep_node_name=pxc1
 
   wsrep_sst_auth="sstuser:Mamad3r"
 ```
 
-Configure Percona XtraDB Cluster settings on percona-02.example.com.
+Configure Percona XtraDB Cluster settings on pxc2.nazarbazi.ir.
 ```
   vim /etc/percona-xtradb-cluster.conf.d/wsrep.cnf
 ```
@@ -79,7 +79,7 @@ Find and set following directives therein.
 
   wsrep_node_address=192.168.116.205
 
-  wsrep_node_name=percona-02
+  wsrep_node_name=pxc2
 
   wsrep_sst_auth="sstuser:Mamad3r"
 ```
@@ -90,7 +90,7 @@ Now its time to bootstap or initialize the first node of the Percona XtraDB Clus
 
 First node of Percona XtraDB Cluster is the one that contains the data, that you want to replicate to other nodes.
 
-Bootstrap the percona-01.example.com node using following command.
+Bootstrap the pxc1.nazarbazi.ir node using following command.
 
 (Note: Please ensure that the mysql.service is stopped on all nodes.)
 ```
@@ -110,22 +110,22 @@ Before adding any node to our cluster, we must create a user for SST (Snapshot S
   EXIT
 ```
 ## Adding Nodes to Percona XtraDB Cluster on CentOS 7:
-Connect to percona-02.example.com using ssh as root user.
+Connect to pxc2.nazarbazi.ir using ssh as root user.
 
 Start Percona service using systemctl command.
 ```
   systemctl start mysql.service
 ```
-If our configurations are correct then the percona-02 node should receive the SST automatically.
+If our configurations are correct then the pxc2 node should receive the SST automatically.
 ```
   mysql -u root -p
   show status like 'wsrep%';
   show status like 'wsrep_cluster_size';
 ```
-You can see that the wsrep_cluster_size is now 2, it shows that the percona-02 node has joined our Percona XtraDB Cluster.
+You can see that the wsrep_cluster_size is now 2, it shows that the pxc2 node has joined our Percona XtraDB Cluster.
 ## Verify Replication in our Percona XtraDB Cluster:
 We can verify replication by manipulating data on one node and check if it replicated on the other node.
-Connect with percona-02.example.com using ssh as root user.
+Connect with pxc2.nazarbazi.ir using ssh as root user.
 Connect to Percona database instance and execute following commands.
 
 ```
@@ -148,8 +148,8 @@ Connect to Percona database instance and execute following commands.
   Query OK, 1 row affected (0.00 sec)
 ```
 
-Connect with percona-01.example.com using ssh as root user.
-Connect with Percona database instance and query the data that we have inserted on percona-02 node.
+Connect with pxc1.nazarbazi.ir using ssh as root user.
+Connect with Percona database instance and query the data that we have inserted on pxc2 node.
 ```
   mysql -u root -p
 ```
