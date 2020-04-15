@@ -7,7 +7,7 @@ we are using just two nodes here, but the configurations do not vary, even if yo
 Connect with pxc1.nazarbazi.ir using ssh as root user.
 Percona XtraDB Cluster requires following service ports for communication, therefore, we are allowing these service ports in CentOS 7 firewall.
 ```
-  firewall-cmd --permanent --add-port={3306,4444,4567,4568}/tcp<br>
+  firewall-cmd --permanent --add-port={3306,4444,4567,4568}/tcp
   firewall-cmd --reload
 ```
 Percona XtraDB Cluster is not fully compatible with SELinux, and it is recommended in PXC official documentation to put SELinux in permissive mode prior to installation.
